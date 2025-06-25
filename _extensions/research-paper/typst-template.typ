@@ -94,7 +94,27 @@
         #text(size: title-size, weight: "bold", font: "Myriad Pro")[
           #title
           #if thanks != none [
-            #footnote(thanks, numbering: "*")
+            // Include affiliations in the thanks footnote
+            #let affil-text = if authors != none {
+              let dagger-symbols = ("†", "‡", "§", "¶", "‖", "#")
+              let affil-parts = ()
+              
+              for (i, author) in authors.enumerate() {
+                if "affiliation" in author {
+                  let symbol = dagger-symbols.at(i)
+                  if "email" in author {
+                    affil-parts.push(symbol + " " + author.affiliation + ". " + author.email)
+                  } else {
+                    affil-parts.push(symbol + " " + author.affiliation)
+                  }
+                }
+              }
+              
+              thanks + "\n" + affil-parts.join("\n")
+            } else {
+              thanks
+            }
+            #footnote(affil-text, numbering: "*")
           ]
         ]
         
@@ -110,30 +130,26 @@
         let count = authors.len()
         let ncols = calc.min(count, 3)
         
+        // Create dagger symbols for each author
+        let dagger-symbols = ("†", "‡", "§", "¶", "‖", "#")
+        
         grid(
           columns: (1fr,) * ncols,
           column-gutter: 1em,
           row-gutter: 0.8em,
-          ..authors.map(author => 
+          ..authors.enumerate().map(((i, author)) => 
             align(center)[
-              #set par(leading: 0.25em)
               #text(size: 12pt, weight: "bold")[
                 #author.name
+                #if "affiliation" in author [
+                  #let symbol = dagger-symbols.at(i)
+                  #super[#symbol]
+                ]
                 #if "orcid" in author [
                   #super[#link("https://orcid.org/" + repr(author.orcid).slice(1, -1))[
                     #text(fill: rgb("#A6CE39"))[#fa-orcid()]
                   ]]
                 ]
-              ]
-              
-              #if "affiliation" in author [
-                #linebreak()
-                #text(size: 10pt, style: "italic")[#author.affiliation]
-              ]
-              
-              #if "email" in author [
-                #linebreak()
-                #text(size: 9pt)[#author.email]
               ]
             ]
           )
@@ -226,5 +242,11 @@
 // Figure styling
 #show figure: it => {
   set par(first-line-indent: 0pt)
+  it
+}
+
+// Bibliography styling
+#show bibliography: it => {
+  set par(first-line-indent: 0pt, hanging-indent: 0.5in, spacing: 0.8em)
   it
 }
