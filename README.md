@@ -1,2 +1,12 @@
-# research-paper
-This is my effort at getting a research paper template going in Quarto + Typst
+# Research-paper Format
+
+## Installing
+
+```bash
+quarto use template <github-organization>/research-paper
+```
+
+This will install the format extension and create an example qmd file
+that you can use as a starting place for your document.
+
+
