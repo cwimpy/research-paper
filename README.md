@@ -1,4 +1,4 @@
-# Research Paper in Quawrto+Typst
+# Research Paper in Quarto+Typst
 
 ## Installing
 
