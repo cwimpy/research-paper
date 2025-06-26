@@ -1,4 +1,4 @@
-# Research-paper Format
+# Research Paper in Quawrto+Typst
 
 ## Installing
 
